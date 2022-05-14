@@ -5,7 +5,7 @@ import AddIcon from '@mui/icons-material/Add'
 import Card from './components/Card'
 import { api } from './services/api'
 import { ModalAdd } from './components/modals/ModalAdd'
-import { BodyStyle, ButtonAdd, ContainerSkeleton, MainStyle, Session, SessionCard, SessionSearchCheckBox, SessionSearchInfo, SessionSearchInput, SessionSearchInputContainer, SessionSearchInputLabel, SubTitle, TitleMaster } from './styles'
+import { BodyStyle, ButtonAdd, ContainerSkeleton, MainStyle, Session, SessionCard, SessionSearch, SessionSearchCheckBox, SessionSearchInfo, SessionSearchInput, SessionSearchInputContainer, SessionSearchInputLabel, SubTitle, TitleMaster } from './styles'
 
 
 export type ToolProps = {
@@ -19,7 +19,9 @@ export type ToolProps = {
 function App() {
   const [checked, setChecked] = useState(true)
   const [tools, setTools] = useState<ToolProps[]>([])
+  const [toolsFitred, setToolsFiltred] = useState<ToolProps[]>([])
   const [openModalAdd, setOpenModalAdd] = useState(false)
+  const [keyWord, setKeyWord] = useState('')
 
   useEffect(() => {
     (async () => {
@@ -27,8 +29,37 @@ function App() {
       const data: ToolProps[] = response.data
 
       setTools(data)
+      setToolsFiltred(data)
     })()
   }, [])
+
+  const filterTool = (word: string) => {
+    setKeyWord(word)
+    if (word.length === 0) {
+      return setToolsFiltred(tools)
+    }
+
+    const newListTools = tools.filter(tool => {
+      if (checked) {
+        if (tool.tags.includes(word.toLowerCase())) {
+          return true
+        } else {
+          return false
+        }
+      }
+
+      if (tool.title.toLowerCase().includes(word.toLowerCase())) {
+        return true
+      } else if (tool.description.toLowerCase().includes(word.toLowerCase())) {
+        return true
+      } else if (tool.tags.includes(word.toLowerCase())) {
+        return true
+      } else {
+        return false
+      }
+    })
+    setToolsFiltred(newListTools)
+  }
 
   return (
     <Box
@@ -70,6 +101,8 @@ function App() {
               />
               <Input
                 id="input-with-icon-adornment"
+                onChange={e => filterTool(e.target.value)}
+                value={keyWord}
                 startAdornment={
                   <InputAdornment
                     position="start"
@@ -105,8 +138,8 @@ function App() {
         <Box
           sx={SessionCard}
         >
-          {tools.length > 0 ? (
-            tools.map(tool => {
+          {toolsFitred.length > 0 ? (
+            toolsFitred.map(tool => {
               return (
                <Card key={tool.id} tool={tool} setTools={setTools}/>
               )

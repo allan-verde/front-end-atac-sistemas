@@ -3,7 +3,9 @@ export const Main = {
     flexDirection: 'column',
     border: '2px solid black',
     padding: '10px',
-    marginBottom: '15px'
+    marginBottom: '15px',
+    width: '1000px',
+    maxWidth: '100%'
 }
 
 export const Session = {
