@@ -63,7 +63,7 @@ const Card = ({ tool, setTools }: CardProps) => {
               sx={ButtonOpenModal}
               color='secondary'
             >
-              #{tag}
+              {` #${tag} `}
             </Typography>
           )
         })}
